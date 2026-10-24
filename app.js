@@ -41,7 +41,7 @@ const visualizerToggle = document.getElementById('visualizerToggle');
 
 let toastTimeout;
 const AUDIO_EXT = /\.(mp3|m4a|aac|wav|flac|ogg|opus)$/i;
-const VIDEO_EXT = /\.(mp4|m4v|webm|mkv|mov)$/i;
+const VIDEO_EXT = /\.(mp4|m4v|webm|mkv|mov|avi|wmv|flv|mpg|mpeg|3gp|ts|m2ts)$/i;
 let tracks = [];
 let currentIndex = -1;
 let lastVolume = 1;
@@ -810,3 +810,18 @@ setTimeout(() => {
   }
 }, 2500);
 
+
+// ===== Format Error Handling =====
+media.addEventListener('error', () => {
+  if (!media.src) return; // Ignore if there is no source
+  
+  const track = tracks[currentIndex];
+  alert(`Aidao Player cannot play this file natively.\n\nFile: ${track.name}\n\nWindows browsers only support MP4, WebM, and some MKV files. For AVI or WMV, please convert the file to MP4.`);
+  
+  // Reset the player to audio mode so the UI isn't stuck on a broken video
+  media.pause();
+  media.removeAttribute('src');
+  turntable.style.display = 'flex';
+  media.style.display = 'none';
+  stopVisualizer();
+});
