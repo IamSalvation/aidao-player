@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aidao Player</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/aidao_player_logo_only-removebg-preview.png" alt="Aidao Player" class="logo">
+      <span class="name">Aidao Player</span>
+    </div>
+    <div class="actions">
+      <span id="libraryStatus" style="color:var(--accent);font-size:.85rem;margin-right:10px;display:none;"></span>
+      <button id="pickFolder" class="btn-open">Open folder</button>
+      <button id="btnSettings" class="ctrl" title="Settings">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
+      <input id="pickFiles" type="file" multiple hidden>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="player-area">
+      <div class="video-surface" id="videoSurface">
+        <video id="media" playsinline></video>
+        <div id="subtitleContainer" class="subtitle-container"></div>
+        
+        <div id="turntable" class="turntable">
+          <canvas id="visualizer" class="visualizer"></canvas>
+          <div class="vinyl" id="vinyl">
+            <img id="vinylArt" class="vinyl-art" alt="Album Art">
+            <div class="vinyl-hole"></div>
+          </div>
+          <div class="track-info">
+            <div id="posterTitle" class="poster-title">No track playing</div>
+            <div id="posterArtist" class="poster-artist">Open files to get started</div>
+            <div id="lyricsContainer" class="lyrics-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="seek-row">
+          <span id="currentTime" class="time">0:00</span>
+          <input id="seekBar" type="range" min="0" max="1000" value="0" class="seek">
+          <span id="duration" class="time" title="Click to toggle remaining time">0:00</span>
+        </div>
+
+        <div class="transport">
+          <!-- SVG Icons for Transport Controls -->
+          <button id="btnShuffle" title="Shuffle" class="ctrl ctrl-small">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          </button>
+          
+          <button id="btnPrev" title="Previous" class="ctrl">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+          </button>
+          
+          <button id="btnPlay" title="Play/Pause" class="ctrl ctrl-main">
+            <svg id="iconPlay" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display: block; margin-left: 3px;"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="iconPause" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          
+          <button id="btnNext" title="Next" class="ctrl">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+          
+          <button id="btnRepeat" title="Repeat: Off" class="ctrl ctrl-small">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+          </button>
+          
+          <button id="btnSpeed" title="Playback Speed: 1x" class="ctrl ctrl-small" style="font-size: 0.8rem; font-weight: bold;">1x</button>
+
+          <div class="volume-group">
+            <button id="btnMute" class="ctrl ctrl-small" title="Mute">
+              <svg id="iconVolume" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              <svg id="iconMute" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+            </button>
+            <input id="volumeBar" type="range" min="0" max="100" value="100" class="volume">
+          </div>
+
+          <button id="btnFullscreen" title="Fullscreen" class="ctrl ctrl-small">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="playlist-panel">
+      <div class="playlist-header">
+        <span>Playlist</span>
+        <span id="trackCount" class="count">0</span>
+      </div>
+      <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search title or artist... (Ctrl+F)">
+      </div>
+      <ul id="playlist" class="playlist"></ul>
+    </aside>
+  </main>
+
+  <div id="dropOverlay" class="drop-overlay">
+    <div class="drop-message">
+      <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--accent)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      <h2>Drop files to play</h2>
+      <p>Release your music or video files here</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">
+    <img id="toastArt" class="toast-art" alt="">
+    <div class="toast-info">
+      <div id="toastTitle" class="toast-title"></div>
+      <div id="toastArtist" class="toast-artist"></div>
+    </div>
+  </div>
+
+  <div id="settingsDrawer" class="settings-drawer">
+    <div class="settings-header">
+      <h2>Settings</h2>
+      <button id="closeSettings" class="ctrl">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="settings-content">
+      <div class="setting-group">
+        <label>App Theme</label>
+        <select id="themeSelect">
+          <option value="vlc">VLC Dark (Orange)</option>
+          <option value="spotify">Spotify Dark (Green)</option>
+          <option value="cyberpunk">Cyberpunk (Neon)</option>
+        </select>
+      </div>
+      <div class="setting-group">
+        <label>
+          <input type="checkbox" id="visualizerToggle" checked>
+          Show Audio Visualizer
+        </label>
+      </div>
+      
+      <hr style="border-color: var(--border); margin: 20px 0;">
+      <div class="setting-group">
+        <label>Equalizer Preset</label>
+        <select id="eqPreset">
+          <option value="flat">Flat (Default)</option>
+          <option value="bass">Bass Boost</option>
+          <option value="vocal">Vocal Boost</option>
+          <option value="rock">Rock</option>
+          <option value="jazz">Jazz</option>
+          <option value="electronic">Electronic</option>
+        </select>
+      </div>
+      
+      <div class="eq-sliders">
+        <div class="eq-band">
+          <span>Bass</span>
+          <input type="range" id="eq-bass" min="-12" max="12" value="0" step="1">
+          <span id="eq-bass-val">0</span>
+        </div>
+        <div class="eq-band">
+          <span>Mid</span>
+          <input type="range" id="eq-mid" min="-12" max="12" value="0" step="1">
+          <span id="eq-mid-val">0</span>
+        </div>
+        <div class="eq-band">
+          <span>Treble</span>
+          <input type="range" id="eq-treble" min="-12" max="12" value="0" step="1">
+          <span id="eq-treble-val">0</span>
+        </div>
+      </div>
+
+      <hr style="border-color: var(--border); margin: 20px 0;">
+      <div class="setting-group">
+        <label style="color: #ff5555; font-weight: bold; margin-bottom: 10px;">Danger Zone</label>
+        <button id="clearLibraryBtn" class="btn-open" style="background: #333; color: white; width: 100%; margin-bottom: 10px; text-align: left; padding: 10px;">🗑️ Clear Saved Library</button>
+        <button id="resetAppBtn" class="btn-open" style="background: #ff5555; color: white; width: 100%; text-align: left; padding: 10px;">⚠️ Reset App to Default</button>
+      </div>
+      <div style="margin-top: 30px; text-align: center; font-size: 0.75rem; color: var(--text-dim);">
+        Aidao Player v1.0.0<br>Built with HTML, CSS, & JavaScript
+      </div>
+    </div>
+  </div>
+
+  <script src="jsmediatags.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+﻿Thumbs.db
+.DS_Store
+node_modules/
+.vscode/
+*.srt
+*.vtt
+*.lrc
+*.mp4
+*.mkv
+*.mp3
+*.wav
+*.flac

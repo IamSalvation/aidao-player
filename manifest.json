@@ -1,0 +1,21 @@
+﻿{
+  "name": "Aidao Player",
+  "short_name": "Aidao",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#161616",
+  "theme_color": "#161616",
+  "description": "A premium music and video player.",
+  "icons": [
+    {
+      "src": "assets/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
