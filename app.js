@@ -800,14 +800,13 @@ btnMute.onclick = () => {
 };
 
 // ===== Splash Screen Logic =====
-window.addEventListener('load', () => {
-  // Wait 2.5 seconds, then fade out the splash screen
-  setTimeout(() => {
-    const splash = document.getElementById('splashScreen');
-    if (splash) {
-      splash.classList.add('hidden');
-      // Remove it from the DOM entirely after the fade finishes
-      setTimeout(() => splash.remove(), 800); 
-    }
-  }, 2500);
-});
+// Start the timer immediately, not waiting for window.load
+setTimeout(() => {
+  const splash = document.getElementById('splashScreen');
+  if (splash) {
+    splash.classList.add('hidden');
+    // Remove it from the DOM entirely after the fade finishes
+    setTimeout(() => splash.remove(), 800); 
+  }
+}, 2500);
+

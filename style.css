@@ -341,3 +341,13 @@ body.theater-mode .video-surface {
   50% { width: 60%; }
   100% { width: 100%; }
 }
+
+/* Apply the 30% curved edges to the splash logo */
+.splash-logo {
+  width: 450px;
+  max-width: 80vw;
+  height: auto;
+  border-radius: 30%; /* This is the magic line that curves the edges */
+  background: white; /* Ensures the background stays white */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8); /* Adds a premium shadow */
+}

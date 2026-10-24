@@ -201,6 +201,17 @@
       });
     }
   </script>
+  <script>
+    // Force splash screen to hide after 2.5 seconds no matter what
+    setTimeout(function() {
+      var splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.classList.add('hidden');
+        setTimeout(function() { splash.remove(); }, 800);
+      }
+    }, 2500);
+  </script>
 </body>
 </html>
+
 
