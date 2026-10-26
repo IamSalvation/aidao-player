@@ -45,8 +45,7 @@ const VIDEO_EXT = /\.(mp4|m4v|webm|mkv|mov|avi|wmv|flv|mpg|mpeg|3gp|ts|m2ts)$/i;
 let tracks = [];
 let currentIndex = -1;
 let lastVolume = 1;
-let isShuffle = false;
-let repeatMode = 0;
+let playMode = 0; // 0 = Normal, 1 = Shuffle, 2 = Repeat All, 3 = Repeat One
 let isShowingRemaining = false;
 let currentSubtitles = [];
 let currentLyrics = [];
@@ -391,20 +390,20 @@ async function play(i) {
 }
 
 function playNext() {
-  if (isShuffle) {
+  if (playMode === 1) { // Shuffle
     let randomIndex = currentIndex;
     while (randomIndex === currentIndex && tracks.length > 1) {
       randomIndex = Math.floor(Math.random() * tracks.length);
     }
     play(randomIndex);
-  } else {
+  } else { // Normal or Repeat
     if (currentIndex < tracks.length - 1) play(currentIndex + 1);
-    else if (repeatMode === 1) play(0);
+    else if (playMode === 2 || playMode === 3) play(0);
   }
 }
 
 media.onended = () => {
-  if (repeatMode === 2) {
+  if (playMode === 3) { // Repeat One
     media.currentTime = 0;
     media.play();
   } else {
@@ -480,14 +479,60 @@ btnPlay.onclick = () => media.paused ? media.play() : media.pause();
 btnPrev.onclick = () => { if (currentIndex > 0) play(currentIndex - 1); };
 btnNext.onclick = playNext;
 
-btnShuffle.onclick = () => { isShuffle = !isShuffle; btnShuffle.classList.toggle('active', isShuffle); };
+// Smart Mode Toggle
+const btnMode = document.getElementById('btnMode');
+const iconNormal = document.getElementById('iconModeNormal');
+const iconShuffle = document.getElementById('iconModeShuffle');
+const iconRepeat = document.getElementById('iconModeRepeat');
+const iconRepeatOne = document.getElementById('iconModeRepeatOne');
 
-btnRepeat.onclick = () => {
-  repeatMode = (repeatMode + 1) % 3;
-  if (repeatMode === 0) { btnRepeat.classList.remove('active'); btnRepeat.textContent = '🔁'; }
-  else if (repeatMode === 1) { btnRepeat.classList.add('active'); btnRepeat.textContent = '🔁'; }
-  else { btnRepeat.classList.add('active'); btnRepeat.textContent = '🔂'; }
+btnMode.onclick = () => {
+  playMode = (playMode + 1) % 4;
+  
+  // Hide all icons
+  iconNormal.style.display = 'none';
+  iconShuffle.style.display = 'none';
+  iconRepeat.style.display = 'none';
+  iconRepeatOne.style.display = 'none';
+  
+  btnMode.classList.remove('active');
+  
+  if (playMode === 0) {
+    iconNormal.style.display = 'block';
+    btnMode.title = "Mode: Play in order";
+  } else if (playMode === 1) {
+    iconShuffle.style.display = 'block';
+    btnMode.classList.add('active');
+    btnMode.title = "Mode: Shuffle";
+  } else if (playMode === 2) {
+    iconRepeat.style.display = 'block';
+    btnMode.classList.add('active');
+    btnMode.title = "Mode: Repeat All";
+  } else if (playMode === 3) {
+    iconRepeatOne.style.display = 'block';
+    btnMode.classList.add('active');
+    btnMode.title = "Mode: Repeat One";
+  }
 };
+
+// Mobile Playlist Drawer Toggle
+const btnTogglePlaylist = document.getElementById('btnTogglePlaylist');
+const playlistPanel = document.getElementById('playlistPanel');
+const playlistBackdrop = document.getElementById('playlistBackdrop');
+
+if (btnTogglePlaylist) {
+  btnTogglePlaylist.onclick = () => {
+    playlistPanel.classList.toggle('open');
+    playlistBackdrop.classList.toggle('open');
+  };
+}
+
+if (playlistBackdrop) {
+  playlistBackdrop.onclick = () => {
+    playlistPanel.classList.remove('open');
+    playlistBackdrop.classList.remove('open');
+  };
+}
 
 btnSpeed.onclick = () => {
   const speeds = [1, 1.25, 1.5, 2, 0.5];
@@ -825,3 +870,4 @@ media.addEventListener('error', () => {
   media.style.display = 'none';
   stopVisualizer();
 });
+
