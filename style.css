@@ -351,3 +351,116 @@ body.theater-mode .video-surface {
   background: white; /* Ensures the background stays white */
   box-shadow: 0 10px 30px rgba(0,0,0,0.8); /* Adds a premium shadow */
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS (Phones & Tablets)
+   ========================================= */
+@media (max-width: 768px) {
+  
+  /* 1. Stack the layout vertically */
+  .main {
+    flex-direction: column;
+  }
+
+  /* 2. Shrink the player area to 55% height */
+  .player-area {
+    flex: 0 0 55vh; 
+    height: 55vh;
+  }
+
+  /* 3. Expand the playlist to fill the rest */
+  .playlist-panel {
+    width: 100%;
+    flex: 1;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    margin-top: -10px; /* Slight overlap for a premium sheet look */
+    z-index: 30;
+  }
+
+  /* 4. Scale down the vinyl so it fits */
+  .vinyl {
+    width: min(220px, 35vh);
+    height: min(220px, 35vh);
+  }
+  .visualizer {
+    width: 260px;
+    height: 260px;
+  }
+  .track-info {
+    bottom: 5%;
+  }
+  .poster-title {
+    font-size: 1.1rem;
+  }
+  .poster-artist {
+    font-size: 0.85rem;
+  }
+
+  /* 5. Fix overlapping controls */
+  .controls {
+    padding: 10px 12px;
+  }
+  .transport {
+    gap: 8px; /* Tighter spacing */
+  }
+  
+  /* Hide the volume slider/icon on mobile - phones have physical buttons */
+  .volume-group {
+    display: none !important; 
+  }
+  
+  /* Make the fullscreen button normal flow instead of absolute */
+  #btnFullscreen {
+    position: static;
+    margin-left: auto; 
+  }
+
+  /* 6. Make the search bar fit */
+  #searchBar::placeholder {
+    color: transparent; /* Hide the Ctrl+F text */
+  }
+  #searchBar {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23999" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    padding-left: 36px;
+  }
+
+  /* 7. Always show delete button (no hover on touch screens) */
+  .delete-btn {
+    opacity: 1;
+    background: rgba(255, 85, 85, 0.1);
+  }
+
+  /* 8. Fix Theater Mode on mobile */
+  body.theater-mode .playlist-panel {
+    margin-right: 0;
+    transform: translateY(100%); /* Slide down instead of right */
+  }
+  body.theater-mode .player-area {
+    flex: 1;
+    height: 100vh;
+  }
+  body.theater-mode .vinyl {
+    width: min(280px, 45vh);
+    height: min(280px, 45vh);
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 400px) {
+  .ctrl {
+    padding: 4px 6px;
+    font-size: 1rem;
+  }
+  .ctrl-main {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  #btnSpeed {
+    display: none; /* Hide speed on very small screens to save space */
+  }
+}
